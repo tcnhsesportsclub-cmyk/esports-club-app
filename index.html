@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Esports Club | Registration</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { background-color: #1e293b; padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; }
+    h2 { color: #38bdf8; }
+    input, select { width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #334155; border-radius: 6px; background-color: #0f172a; color: white; box-sizing: border-box; }
+    button { background-color: #38bdf8; color: #000; border: none; padding: 14px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: #7dd3fc; }
+    .link { display: block; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+    .link:hover { color: #38bdf8; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Player Registration</h2>
+    <form onsubmit="registerPlayer(event)">
+      <input type="text" id="regName" placeholder="Full Name" required>
+      <input type="text" id="regIgn" placeholder="In-Game Name (IGN)" required>
+      <select id="regGame" required>
+        <option value="" disabled selected>Select Primary Game</option>
+        <option value="Valorant">Valorant</option>
+        <option value="Mobile Legends">Mobile Legends</option>
+        <option value="League of Legends">League of Legends</option>
+        <option value="Dota 2">Dota 2</option>
+        <option value="Other">Other</option>
+      </select>
+      <button type="submit">Complete Registration</button>
+    </form>
+    
+    <a href="officer.html" class="link">Go to Officer Portal →</a>
+  </div>
+
+  <script>
+    function registerPlayer(event) {
+      event.preventDefault();
+      
+      // 1. Pull the existing database (or create an empty one)
+      let database = JSON.parse(localStorage.getItem('esportsDatabase')) || [];
+      
+      // 2. Create the new player data
+      const newPlayer = {
+        date: new Date().toLocaleDateString(),
+        name: document.getElementById('regName').value,
+        ign: document.getElementById('regIgn').value,
+        game: document.getElementById('regGame').value
+      };
+
+      // 3. Add player and save back to local storage
+      database.push(newPlayer);
+      localStorage.setItem('esportsDatabase', JSON.stringify(database));
+
+      // 4. Reset form and alert
+      alert('Registration Successful!');
+      event.target.reset();
+    }
+  </script>
+</body>
+</html>
