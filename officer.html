@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Esports Club | Officer Portal</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    .container { background-color: #1e293b; padding: 40px; border-radius: 12px; width: 100%; max-width: 800px; text-align: center; }
+    h2 { color: #38bdf8; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #334155; border-radius: 6px; background-color: #0f172a; color: white; box-sizing: border-box; }
+    button { background-color: #38bdf8; color: #000; border: none; padding: 14px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+    .error { color: #ef4444; display: none; margin-bottom: 10px; }
+    
+    /* Table Styles */
+    #dashboardView { display: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+    th, td { padding: 12px; border-bottom: 1px solid #334155; }
+    th { color: #38bdf8; }
+    .link { display: block; margin-top: 20px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div id="loginView">
+      <h2>Officer Portal</h2>
+      <p style="color: #94a3b8;">Enter clearance code to access the database.</p>
+      <div id="errorMsg" class="error">Incorrect Password. Access Denied.</div>
+      <input type="password" id="passInput" placeholder="Password">
+      <button onclick="verifyLogin()">Access Database</button>
+      <a href="index.html" class="link">← Back to Registration</a>
+    </div>
+
+    <div id="dashboardView">
+      <h2>Member Database</h2>
+      <input type="text" id="searchInput" placeholder="Search by Name, IGN, or Game..." onkeyup="searchTable()">
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>IGN</th>
+            <th>Game</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          </tbody>
+      </table>
+      <button style="margin-top: 20px; background-color: transparent; border: 1px solid #38bdf8; color: #38bdf8;" onclick="location.reload()">Lock Database</button>
+    </div>
+
+  </div>
+
+  <script>
+    function verifyLogin() {
+      const pass = document.getElementById('passInput').value;
+      if (pass === "ECTCNHS26'27") {
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('dashboardView').style.display = 'block';
+        loadDatabase();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    }
+
+    function loadDatabase() {
+      // 1. Pull the exact same database the other app uses
+      const database = JSON.parse(localStorage.getItem('esportsDatabase')) || [];
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      if (database.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No members found.</td></tr>';
+        return;
+      }
+
+      // 2. Build the table rows
+      database.forEach(player => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${player.date}</td>
+            <td>${player.name}</td>
+            <td>${player.ign}</td>
+            <td>${player.game}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function searchTable() {
+      const filter = document.getElementById('searchInput').value.toUpperCase();
+      const rows = document.getElementById('tableBody').getElementsByTagName('tr');
+
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].getElementsByTagName('td')[0].colSpan > 1) continue;
+        let textValue = rows[i].textContent || rows[i].innerText;
+        rows[i].style.display = textValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+      }
+    }
+  </script>
+</body>
+</html>
